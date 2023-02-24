@@ -32,6 +32,7 @@ class LedController:
             return data
 
         data += [1, 1, 2]
+        
         chunk: list[int] = []
         
         color = color.lower()
