@@ -21,7 +21,6 @@ class LedController:
 
     def build_control_string(
             self,
-            color,
             effect,
         ):
         data = [204, 22]
@@ -34,14 +33,13 @@ class LedController:
         data += [1, 1, 2]
         
         chunk: list[int] = []
-        
-        color = color.lower()
-        if re.match(r"^[0-9a-f]{6}$", color):
+        effect = effect.lower()
+        if re.match(r"^[0-9a-f]{6}$", effect):
             chunk = [
-                int(color[i : i + 2], 16) for i in range(0, len(color), 2)
+                int(effect[i : i + 2], 16) for i in range(0, len(effect), 2)
             ]
         else:
-            raise ValueError(f"Invalid color format: {color}")
+            raise ValueError(f"Invalid effect format: {effect}")
 
         data += chunk*4
         data += [0] * 15
@@ -59,45 +57,17 @@ class LedController:
 if __name__ == "__main__":
     import argparse
 
-    # Parse arguments
     argparser = argparse.ArgumentParser(
-        description="Lenovo Legion 5 Pro 2021 keyboard light controller"
+        description="Lenovo Legion 5 Pro 2023 keyboard light controller"
     )
 
-    effect_subparsers = argparser.add_subparsers(help="Light effect", dest="effect")
-
-    # Global options
-    global_parser = argparse.ArgumentParser(add_help=False)
-    global_parser.add_argument(
-        "--brightness",
-        type=int,
-        choices=range(1, 3),
-        default=1,
-        help="Light brightness",
-    )
-
-    # Options for custom color settings only
-    custom_parser = argparse.ArgumentParser(add_help=False)
-    custom_parser.add_argument("colors", nargs="+", help="Colors of sections")
-
-    # Options for animated effects
-    animated_parser = argparse.ArgumentParser(add_help=False)
-    animated_parser.add_argument(
-        "--speed", type=int, choices=range(1, 5), default=1, help="Animation speed"
-    )
-
-    effect_subparsers.add_parser(
-        "static", help="Static color", parents=[global_parser, custom_parser]
-    )
-
-    effect_subparsers.add_parser("off", help="Turn light off")
+    argparser.add_argument("effect", nargs="+", help="{off, hex}")
 
     args = argparser.parse_args()
 
     controller = LedController()
     data = controller.build_control_string(
-        effect=args.effect,
-        color=args.colors[0],
+        effect=args.effect[0],
     )
 
     controller.send_control_string(data)
