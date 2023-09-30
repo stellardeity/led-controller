@@ -1,4 +1,4 @@
-```sudo python3 keyboard.py static 4B0084```
+```sudo python3 ./led.py 4B0084```
 <hr />
 
 ```/sys/kernel/debug/hid``` Human Interface Devices \
