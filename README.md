@@ -11,5 +11,5 @@
     from usb.backend.libusb1 import _Device
 ModuleNotFoundError: No module named 'usb'```
 
-```sudo pip3 install pyusb```
+sudo pip3 install pyusb
 
